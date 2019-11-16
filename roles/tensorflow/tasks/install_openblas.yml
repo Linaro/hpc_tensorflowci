@@ -1,0 +1,16 @@
+---
+- name: Get the openblas_repo file for yum
+  template:
+          src: openblas.repo.j2
+          dest: /etc/yum.repos.d/openblas.repo
+
+- name: Clean yum cache
+  shell: "yum clean all"
+
+- name: Repopulate yum cache
+  shell: "yum makecache"
+
+- name: Install openblas from the repo
+  yum:
+          name: openblas-{{ openblas_version }}
+          state: present

@@ -116,10 +116,13 @@ include_dirs = "{{ LD_INCLUDE_PATH }}"
 #
 [openblas]
 libraries = openblas
-library_dirs = "{{ openblas_library_path }}" 
-include_dirs = "{{ openblas_include_path }}"
-runtime_library_dirs = "{{ openblas_library_path }}"
+library_dirs = "{{ LD_LIBRARY_PATH }}"
+include_dirs = "{{ LD_INCLUDE_PATH }}"
 
+[blas_info]
+libraries = openblas
+library_dirs = "{{ LD_LIBRARY_PATH }}"
+include_dirs = "{{ LD_INCLUDE_PATH }}"
 # UMFPACK
 # -------
 # The UMFPACK library is used in scikits.umfpack to factor large sparse matrices. 
@@ -151,5 +154,5 @@ runtime_library_dirs = "{{ openblas_library_path }}"
 # of FFTW you are using.
 [fftw]
 libraries = fftw3
-library_dirs = "{{ fftw_library_path }}" 
-include_dirs = "{{ fftw_include_path }}"
+library_dirs = "{{ LD_LIBRARY_PATH }}"
+include_dirs = "{{ LD_INCLUDE_PATH }}"

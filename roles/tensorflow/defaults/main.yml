@@ -13,6 +13,7 @@ venv_path: "{{ dir_root }}/virtualenv"
 
 # rpm build variables
 dir_rpmbuilt: "/home/{{ user }}/rpmbuild/RPMS/{{ arch }}"
+dir_rpmbuild_sources: "/home/{{ user }}/rpmbuild/SOURCES/"
 
 
 # NumPy variables
@@ -52,6 +53,8 @@ tensorflow:
                - "-fomit-frame-pointer"
 
 # Bazel variables
+build_bazel: true
+
 bazel_version: "0.26.1"
 bazel_minorversion: "0"
 bazel_rpm: "{{ dir_rpmbuilt }}/bazel-{{ bazel_version }}-{{ bazel_minorversion }}.{{ distribution }}.{{ arch }}.rpm"
@@ -63,19 +66,44 @@ bazel:
        release_zip: "bazel-{{ bazel_version }}-dist.zip"
        binary: "{{ bazel_dir_output }}/bazel"
        patching_required: false
-       built_tarball: "bazel_{{ bazel_version }}_{{ build_id }}.tar.gz"
+
+# OpenBlas variables
+build_openblas: true
+
+openblas_version: "0.3.8a"
+openblas_minorversion: "1.ohpc.1.3.6"
+openblas_rpm: "{{ dir_rpmbuilt }}/openblas-gnu8-ohpc-{{ openblas_version }}-{{ openblas_minorversion }}.{{ arch }}.rpm"
+openblas_dir_base: "{{ dir_home }}/openblas"
+openblas_dir_src: "{{ openblas_dir_base }}/{{ openblas_version}}"
+openblas_dir_output: "{{ openblas_dir_src }}/output"
+openblas_target_micro: "ARMV8"
+openblas_additional_flags: ""
+openblas:
+       release_url: "https://github.com/xianyi/OpenBLAS/archive/develop.zip"
+       release_zip: "openblas-develop.zip"
+       binary: "{{ openblas_dir_output }}/openblas"
+       patching_required: false
+
+# OHPC Variables
+ohpc_raw_github_baseurl: "https://raw.githubusercontent.com/openhpc/ohpc/obs/OpenHPC_1.3.9_Factory"
 
 ohpc_toolchain_base_dir: "/opt/ohpc/pub/compiler/gcc/8.3.0"
 ohpc_toolchain_lib_dir: "{{ ohpc_toolchain_base_dir }}/lib64"
-LD_LIBRARY_PATH: "/opt/ohpc/pub/libs/gnu8/hdf5/1.10.5/lib:/opt/ohpc/pub/libs/gnu8/openblas/0.3.5/lib:/opt/ohpc/pub/mpi/openmpi3-gnu8/3.1.4/lib:/opt/ohpc/pub/compiler/gcc/8.3.0/lib64"
-LD_INCLUDE_PATH: "/opt/ohpc/pub/libs/gnu8/hdf5/1.10.5/include:/opt/ohpc/pub/libs/gnu8/openblas/0.3.5/include:/opt/ohpc/pub/mpi/openmpi3-gnu8/3.1.4/include::/opt/ohpc/pub/compiler/gcc/8.3.0/lib64"
-openblas_library_path: "/opt/ohpc/pub/libs/gnu8/openblas/0.3.5/lib"
-openblas_include_path: "/opt/ohpc/pub/libs/gnu8/openblas/0.3.5/include"
+
+openblas_library_path: "/opt/ohpc/pub/libs/gnu8/openblas/{{ openblas_version if build_openblas == true else '0.3.6' }}/lib"
+openblas_include_path: "/opt/ohpc/pub/libs/gnu8/openblas/{{ openblas_version if build_openblas == true else '0.3.6' }}/include"
 
 fftw_library_path: "/opt/ohpc/pub/libs/gnu8/openmpi3/fftw/3.3.8/lib"
 fftw_include_path: "/opt/ohpc/pub/libs/gnu8/openmpi3/fftw/3.3.8/include"
 
 hdf5_base_dir: "/opt/ohpc/pub/libs/gnu8/hdf5/1.10.5"
+hdf5_library_dir: "{{ hdf5_base_dir }}/lib"
+
+mpi_base_dir: "/opt/ohpc/pub/mpi/openmpi3-gnu8/3.1.4"
+mpi_library_dir: "{{ mpi_base_dir }}/lib"
+
+LD_LIBRARY_PATH: "{{ hdf5_library_dir }}:{{ openblas_library_path }}:{{ mpi_library_dir }}:{{ ohpc_toolchain_lib_dir }}"
+LD_INCLUDE_PATH: "{{ hdf5_base_dir }}/include:{{ openblas_include_path }}:{{ mpi_base_dir }}/include:{{ ohpc_toolchain_base_dir }}/include"
 
 ### BUILD DEPENDENCIES
 # Non OHPC, non python, non java
@@ -95,6 +123,7 @@ tf_build_ohpc_dependencies:
         - lmod-ohpc
         - openmpi3-gnu8-ohpc
         - ohpc-gnu8-perf-tools
+        - ohpc-buildroot
         - ohpc-gnu8-io-libs
         - ohpc-gnu8-python-libs
         - ohpc-gnu8-runtimes
