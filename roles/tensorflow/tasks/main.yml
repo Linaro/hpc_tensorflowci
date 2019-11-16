@@ -16,6 +16,13 @@
   become_method: su
   become_flags: "-s /bin/bash"
 
+- name: Build OpenBLAS
+  import_tasks: build_openblas.yml
+  become: yes
+  become_user: "{{ user }}"
+  become_method: su
+  become_flags: "-s /bin/bash"
+
 - name: Build Bazel
   import_tasks: build_bazel.yml
   become: yes

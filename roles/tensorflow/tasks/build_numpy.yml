@@ -1,4 +1,14 @@
 ---
+- name: Delete build dirs numpy
+  file:
+          path: "{{ item }}"       
+          state: absent
+  with_items:
+          - "{{ numpy_dir_base }}"
+          - "{{ numpy_dir_src }}"
+          - "{{ numpy_dir_output }}"
+          - "/home/{{ user }}/.numpy-site.cfg"
+
 - name: Create build dirs numpy
   file:
           path: "{{ item }}"       
@@ -27,6 +37,9 @@
   template:
           src: "numpy-site.cfg.j2"
           dest: "/home/{{ user }}/.numpy-site.cfg"
+          owner: "{{ user }}"
+          group: "{{ user }}"
+          mode: '0777'
 
 - name: Get patch workaround for gcc bug
   template:
@@ -53,6 +66,8 @@
   pip:
           name: "{{ numpy.wheel }}"
           virtualenv: "{{ venv_path }}"
+  environment:
+          HOME: "/home/{{ user }}/"
   register: numpy_install_log
 - debug: var=numpy_install_log
 

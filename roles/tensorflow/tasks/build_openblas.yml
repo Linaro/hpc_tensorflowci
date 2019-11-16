@@ -1,0 +1,66 @@
+---
+- name: Delete build dirs openblas
+  file:
+          path: "{{ item }}"       
+          state: absent
+  with_items:
+          - "{{ openblas_dir_base }}"
+          - "{{ openblas_dir_src }}"
+          - "{{ openblas_dir_output }}"
+          - "{{ dir_rpmbuild_sources }}"
+
+- name: Create build dirs openblas
+  file:
+          path: "{{ item }}"       
+          state: directory
+          mode: '0755'
+          owner: "{{ user }}"
+          group: "{{ user }}"
+  with_items:
+          - "{{ openblas_dir_base }}"
+          - "{{ openblas_dir_src }}"
+          - "{{ openblas_dir_output }}"
+          - "{{ dir_rpmbuild_sources }}"
+
+- name: Fetch rpm spec for openblas
+  template:
+          src: "openblas.spec.j2"
+          dest: "{{ openblas_dir_src }}/openblas.spec"
+          owner: "{{ user }}"
+          group: "{{ user }}"
+          
+- name: Fetch openblas release tarball
+  get_url:
+          url: "{{ openblas.release_url }}"
+          dest: "{{ dir_rpmbuild_sources }}/openblas-develop.zip"
+
+- name: Fetch ohpc build deps for openblas
+  get_url:
+          url: "{{ item }}"
+          dest: "{{ dir_rpmbuild_sources }}/{{ item | basename }}"
+  with_items:
+          - "{{ ohpc_raw_github_baseurl }}/components/OHPC_compiler_deps"
+          - "{{ ohpc_raw_github_baseurl }}/components/OHPC_macros"
+          - "{{ ohpc_raw_github_baseurl }}/components/OHPC_mod_generator.sh"
+          - "{{ ohpc_raw_github_baseurl }}/components/OHPC_setup_compiler"
+          - "{{ ohpc_raw_github_baseurl }}/components/OHPC_setup_mpi"
+          - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/fix-arm64-cpuid-return.patch"
+          - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/openblas-libs.patch"
+          - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/openblas-noexecstack.patch"
+          - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/rpmlintrc"
+
+- name: Build openblas
+  shell: "rpmbuild -ba {{ openblas_dir_src }}/openblas.spec"
+  args:
+          chdir: "{{ openblas_dir_src }}"
+          executable: "/bin/bash"
+  register: openblas_build_log
+- debug: var=openblas_build_log
+
+- name: Install openblas
+  yum:
+          name: "{{ openblas_rpm }}"
+          state: present
+  become: yes
+  become_user: root
+  become_method: sudo
