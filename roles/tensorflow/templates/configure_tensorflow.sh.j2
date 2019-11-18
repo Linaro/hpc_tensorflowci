@@ -28,6 +28,7 @@
 
   # when using NCCL you need to install it own your own
   export GCC_HOST_COMPILER_PATH="{{ ohpc_toolchain_base_dir }}/bin/gcc"
+  export CC="{{ 'mpicc' if build_tf_mpi == true else '$GCC_HOST_COMPILER_PATH' }}"
   export HOST_C_COMPILER=$GCC_HOST_COMPILER_PATH
   export PREFIX="{{ ohpc_toolchain_base_dir }}"
   export CC_OPT_FLAGS="-march=native"

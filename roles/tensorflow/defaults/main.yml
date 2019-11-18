@@ -38,6 +38,7 @@ tensorflow_dir_base: "{{ dir_home }}/tensorflow/{{ tensorflow_version}}"
 tensorflow_dir_src: "{{ tensorflow_dir_base }}/tensorflow-{{ tensorflow_version }}"
 tensorflow_configure: "{{ tensorflow_dir_src }}/configure"
 tensorflow_dir_output: "/tmp/tensorflow_pkg"
+build_tf_mpi: true
 tensorflow:
        release_url: "https://github.com/tensorflow/tensorflow/archive/v{{ tensorflow_version }}.zip"
        release_zip: "tensorflow-{{ tensorflow_version }}.zip"
