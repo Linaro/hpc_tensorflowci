@@ -1,0 +1,18 @@
+---
+# OpenBlas variables
+build_openblas: true
+
+openblas_version: "0.3.8a"
+openblas_minorversion: "1.ohpc.1.3.6"
+openblas_rpm: "{{ dir_rpmbuilt }}/openblas-gnu8-ohpc-{{ openblas_version }}-{{ openblas_minorversion }}.{{ arch }}.rpm"
+openblas_dir_base: "{{ dir_home }}/openblas"
+openblas_dir_src: "{{ openblas_dir_base }}/{{ openblas_version}}"
+openblas_dir_output: "{{ openblas_dir_src }}/output"
+openblas_target_micro: "ARMV8"
+openblas_additional_flags: ""
+openblas:
+       release_url: "https://github.com/xianyi/OpenBLAS/archive/develop.zip"
+       release_zip: "openblas-develop.zip"
+       binary: "{{ openblas_dir_output }}/openblas"
+       patching_required: false
+

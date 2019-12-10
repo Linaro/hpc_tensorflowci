@@ -1,0 +1,7 @@
+---
+- name: Build OpenBLAS
+  import_tasks: roles/openblas/tasks/build_openblas.yml
+  become: yes
+  become_user: "{{ user }}"
+  become_method: su
+  become_flags: "-s /bin/bash"
