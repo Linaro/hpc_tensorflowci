@@ -1,0 +1,17 @@
+---
+- name: Install dependencies
+  import_tasks: roles/common/tasks/pre_build.yml
+
+- name: Install python3 dependencies
+  import_tasks: roles/common/tasks/pre_build_venv.yml
+  become: yes
+  become_user: "{{ user }}"
+  become_method: su
+  become_flags: "-s /bin/bash"
+
+- name: Make sure env is good
+  import_tasks: roles/common/tasks/pre_build_test.yml
+  become: yes
+  become_user: "{{ user }}"
+  become_method: su
+  become_flags: "-s /bin/bash"

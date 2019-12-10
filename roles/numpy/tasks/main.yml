@@ -1,0 +1,7 @@
+---
+- name: Build numpy
+  import_tasks: roles/numpy/tasks/build_numpy.yml
+  become: yes
+  become_user: "{{ user }}"
+  become_method: su
+  become_flags: "-s /bin/bash"
