@@ -2,6 +2,7 @@
 - hosts: target
   roles:
           - common
+          - dnnl
           - openblas
           - bazel
           - numpy
