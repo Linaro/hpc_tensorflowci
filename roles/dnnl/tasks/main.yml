@@ -1,0 +1,7 @@
+---
+- name: Build DNNL
+  import_tasks: roles/dnnl/tasks/build_dnnl.yml
+  become: yes
+  become_user: "{{ user }}"
+  become_method: su
+  become_flags: "-s /bin/bash"

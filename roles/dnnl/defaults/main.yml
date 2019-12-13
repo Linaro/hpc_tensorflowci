@@ -1,0 +1,17 @@
+---
+# NumPy variables
+# See : https://github.com/ansible/ansible/issues/8603 
+# (No it's not "resolved", it's "bad design we can't fix")
+dnnl_version: "0.19"
+dnnl_prefix: "/opt/ohpc/pub/libs/gnu8/mkl-dnn"
+dnnl_dir_base: "{{ dir_home }}/dnnl/{{ dnnl_version}}"
+dnnl_dir_src: "{{ dnnl_dir_base }}/mkl-dnn-{{ dnnl_version }}"
+dnnl_dir_build: "{{ dnnl_dir_base }}/mkl-dnn-{{ dnnl_version }}/build"
+# https://github.com/intel/mkl-dnn/archive/v0.19.zip
+dnnl_dir_output: "{{ dnnl_prefix }}/"
+dnnl:
+       release_url: "https://github.com/intel/mkl-dnn/archive/v{{ dnnl_version }}.zip"
+       release_zip: "mkl-dnn-{{ dnnl_version }}.zip"
+       built_tarball: "dnnl_{{ dnnl_version }}_{{ build_id }}.tar.gz"
+       arch_opt_flags: ""
+       build_type: "DEBUG"

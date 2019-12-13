@@ -109,6 +109,7 @@ LD_INCLUDE_PATH: "{{ hdf5_base_dir }}/include:{{ openblas_include_path }}:{{ mpi
 # Non OHPC, non python, non java
 tf_build_dependencies:
         - "@Development Tools"
+        - cmake
         - createrepo
         - rpm-build
         - vim
