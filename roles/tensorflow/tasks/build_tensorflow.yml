@@ -86,7 +86,7 @@
           format: gz
 
 - name: Install h5py as dependency for tensorflow
-  shell: "source {{ venv_path }}/bin/activate && HDF5_DIR={{ hdf5_base_dir }} pip install h5py"
+  shell: "source {{ venv_path }}/bin/activate && HDF5_DIR={{ hdf5_base_path }} pip install h5py"
   args:
           chdir: "{{ tensorflow_dir_src }}"
           executable: "/bin/bash"

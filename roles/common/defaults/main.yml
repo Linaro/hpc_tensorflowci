@@ -1,6 +1,6 @@
 ---
 arch: "aarch64"
-distribution: "el7"
+distribution: "el{{ ansible_distribution_major_version|int }}"
 
 python3: "/usr/bin/python3"
 user: "builder"
@@ -10,6 +10,7 @@ dir_home: "{{ dir_root }}/tensorflow_build"
 dir_repo: "{{ dir_root }}/repo_tensorflow"
 dir_built: "{{ dir_root }}/built_tarballs"
 venv_path: "{{ dir_root }}/virtualenv"
+use_openhpc: "{{ true if ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8 else false }}"
 
 # rpm build variables
 dir_rpmbuilt: "/home/{{ user }}/rpmbuild/RPMS/{{ arch }}"
@@ -72,6 +73,7 @@ build_openblas: true
 
 openblas_version: "0.3.8a"
 openblas_minorversion: "1.ohpc.1.3.6"
+openhpc_openblas_version: "0.3.6"
 openblas_rpm: "{{ dir_rpmbuilt }}/openblas-gnu8-ohpc-{{ openblas_version }}-{{ openblas_minorversion }}.{{ arch }}.rpm"
 openblas_dir_base: "{{ dir_home }}/openblas"
 openblas_dir_src: "{{ openblas_dir_base }}/{{ openblas_version}}"
@@ -88,22 +90,47 @@ openblas:
 ohpc_raw_github_baseurl: "https://raw.githubusercontent.com/openhpc/ohpc/obs/OpenHPC_1.3.9_Factory"
 
 ohpc_toolchain_base_dir: "/opt/ohpc/pub/compiler/gcc/8.3.0"
+ohpc_toolchain_bin_dir: "/opt/ohpc/pub/compiler/gcc/8.3.0/bin"
 ohpc_toolchain_lib_dir: "{{ ohpc_toolchain_base_dir }}/lib64"
+ohpc_toolchain_include_dir: "{{ ohpc_toolchain_base_dir }}/include"
 
-openblas_library_path: "/opt/ohpc/pub/libs/gnu8/openblas/{{ openblas_version if build_openblas == true else '0.3.6' }}/lib"
-openblas_include_path: "/opt/ohpc/pub/libs/gnu8/openblas/{{ openblas_version if build_openblas == true else '0.3.6' }}/include"
+toolchain_base_dir: "{{ ohpc_toolchain_base_dir if use_openhpc == true else '/usr/bin/' }}"
+toolchain_bin_dir: "{{ ohpc_toolchain_bin_dir if use_openhpc == true else toolchain_base_dir }}"
+toolchain_lib_dir: "{{ ohpc_toolchain_lib_dir if use_openhpc == true else '/usr/lib64/' }}"
+toolchain_include_dir: "{{ ohpc_toolchain_include_dir if use_openhpc == true else '/usr/include/' }}"
 
-fftw_library_path: "/opt/ohpc/pub/libs/gnu8/openmpi3/fftw/3.3.8/lib"
-fftw_include_path: "/opt/ohpc/pub/libs/gnu8/openmpi3/fftw/3.3.8/include"
+_openblas_library_path: "/opt/ohpc/pub/libs/gnu8/openblas/{{ openblas_version if build_openblas == true else openhpc_openblas_version }}/lib"
+_openblas_include_path: "/opt/ohpc/pub/libs/gnu8/openblas/{{ openblas_version if build_openblas == true else openhpc_openblas_version }}/include"
 
-hdf5_base_dir: "/opt/ohpc/pub/libs/gnu8/hdf5/1.10.5"
-hdf5_library_dir: "{{ hdf5_base_dir }}/lib"
+openblas_library_path: "{{ _openblas_library_path if use_openhpc == true else toolchain_lib_dir }}"
+openblas_include_path: "{{ _openblas_include_path if use_openhpc == true else toolchain_include_dir }}"
 
-mpi_base_dir: "/opt/ohpc/pub/mpi/openmpi3-gnu8/3.1.4"
-mpi_library_dir: "{{ mpi_base_dir }}/lib"
 
-LD_LIBRARY_PATH: "{{ hdf5_library_dir }}:{{ openblas_library_path }}:{{ mpi_library_dir }}:{{ ohpc_toolchain_lib_dir }}"
-LD_INCLUDE_PATH: "{{ hdf5_base_dir }}/include:{{ openblas_include_path }}:{{ mpi_base_dir }}/include:{{ ohpc_toolchain_base_dir }}/include"
+_fftw_library_path: "/opt/ohpc/pub/libs/gnu8/openmpi3/fftw/3.3.8/lib"
+_fftw_include_path: "/opt/ohpc/pub/libs/gnu8/openmpi3/fftw/3.3.8/include"
+
+fftw_library_path: "{{ _fftw_library_path if use_openhpc == true else toolchain_lib_dir }}"
+fftw_include_path: "{{ _fftw_include_path if use_openhpc == true else toolchain_include_dir }}"
+
+
+_hdf5_base_path: "/opt/ohpc/pub/libs/gnu8/hdf5/1.10.5"
+_hdf5_library_path: "{{ _hdf5_base_path }}/lib"
+_hdf5_include_path: "{{ _hdf5_base_path }}/include"
+
+hdf5_base_path: "{{ _hdf5_base_path if use_openhpc == true else toolchain_lib_dir }}"
+hdf5_include_path: "{{ _hdf5_include_path if use_openhpc == true else toolchain_include_dir }}"
+hdf5_library_path: "{{ _hdf5_library_path if use_openhpc == true else toolchain_lib_dir }}"
+
+
+_mpi_base_path: "/opt/ohpc/pub/mpi/openmpi3-gnu8/3.1.4"
+_mpi_library_path: "{{ _mpi_base_path }}/lib"
+
+mpi_base_path: "{{ _mpi_base_path if use_openhpc == true else '/usr/lib64/openmpi/' }}"
+mpi_library_path: "{{ _mpi_library_path if use_openhpc == true else '/usr/lib64/openmpi/lib' }}"
+
+
+LD_LIBRARY_PATH: "{{ hdf5_library_path }}:{{ openblas_library_path }}:{{ mpi_library_path }}:{{ toolchain_lib_dir }}"
+LD_INCLUDE_PATH: "{{ hdf5_include_path }}:{{ openblas_include_path }}:{{ mpi_base_path }}/include:{{ toolchain_include_dir }}"
 
 ### BUILD DEPENDENCIES
 # Non OHPC, non python, non java
@@ -120,6 +147,17 @@ tf_build_dependencies:
 
 ohpc_release_url: "http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/aarch64/ohpc-release-1.3-1.el7.aarch64.rpm"
 
+tf_build_noohpc_dependencies:
+        - openmpi
+        - openmpi-devel
+        - fftw
+        - fftw-devel
+        - hdf5
+        - hdf5-devel
+        - perl-devel
+        - multilib-rpm-config
+        - execstack
+
 tf_build_ohpc_dependencies:
         - lmod-ohpc
         - openmpi3-gnu8-ohpc
@@ -133,7 +171,7 @@ tf_build_ohpc_dependencies:
         - fftw-gnu8-openmpi3-ohpc
         - lmod-defaults-gnu8-openmpi3-ohpc
 
-tf_build_java8:
+tf_build_java:
         - java-11-openjdk
         - java-11-openjdk-devel
 

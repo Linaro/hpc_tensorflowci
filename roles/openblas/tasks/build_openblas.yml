@@ -28,6 +28,28 @@
           dest: "{{ openblas_dir_src }}/openblas.spec"
           owner: "{{ user }}"
           group: "{{ user }}"
+  when: use_openhpc == true 
+
+- name: Fetch rpm spec for openblas
+  template:
+          src: "openblas_upstream.spec.j2"
+          dest: "{{ openblas_dir_src }}/openblas.spec"
+          owner: "{{ user }}"
+          group: "{{ user }}"
+  when: use_openhpc == false 
+
+- name: Fetch rpm spec for openblas
+  template:
+          src: "{{ item }}"
+          dest: "{{ dir_rpmbuild_sources }}/{{ item }}"
+          owner: "{{ user }}"
+          group: "{{ user }}"
+  with_items:
+          - "openblas-0.2.15-system_lapack.patch"
+          - "openblas-0.2.5-libname.patch"
+          - "openblas-0.2.15-constructor.patch"
+          - "openblas-0.3.3-noopt.patch"
+  when: use_openhpc == false 
           
 - name: Fetch openblas release tarball
   get_url:
@@ -48,6 +70,7 @@
           - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/openblas-libs.patch"
           - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/openblas-noexecstack.patch"
           - "{{ ohpc_raw_github_baseurl }}/components/serial-libs/openblas/SOURCES/rpmlintrc"
+  when: use_openhpc == true 
 
 - name: Build openblas
   shell: "rpmbuild -ba {{ openblas_dir_src }}/openblas.spec"
@@ -57,10 +80,8 @@
   register: openblas_build_log
 - debug: var=openblas_build_log
 
-- name: Install openblas
-  yum:
-          name: "{{ openblas_rpm }}"
-          state: present
+- name: Create Repo in rpmbuild/RPMS
+  shell: "createrepo {{ dir_rpmbuilt }}"
   become: yes
   become_user: root
   become_method: sudo

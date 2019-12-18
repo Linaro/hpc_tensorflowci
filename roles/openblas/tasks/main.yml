@@ -5,3 +5,9 @@
   become_user: "{{ user }}"
   become_method: su
   become_flags: "-s /bin/bash"
+
+- name: Install OpenBLAS
+  import_tasks: roles/openblas/tasks/install_openblas.yml
+  become: yes
+  become_user: "root"
+  become_method: sudo
