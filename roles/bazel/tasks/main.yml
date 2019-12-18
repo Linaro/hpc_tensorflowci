@@ -10,3 +10,5 @@
 - name: Install Bazel (no build)
   import_tasks: roles/bazel/tasks/install_bazel.yml
   when: build_bazel == false
+  become: yes
+  become_method: sudo

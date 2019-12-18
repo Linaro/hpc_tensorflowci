@@ -12,5 +12,5 @@
 
 - name: Install openblas from the repo
   yum:
-          name: openblas-{{ openblas_version }}
+          name: "{{ openblas_pkgname }}" 
           state: present
