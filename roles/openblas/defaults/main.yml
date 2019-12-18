@@ -10,6 +10,7 @@ openblas_dir_src: "{{ openblas_dir_base }}/{{ openblas_version}}"
 openblas_dir_output: "{{ openblas_dir_src }}/output"
 openblas_target_micro: "ARMV8"
 openblas_additional_flags: ""
+openblas_pkgname: "openblas-{{ 'gnu8-ohpc-' if use_openhpc == true else '' }}{{ openblas_version }}"
 openblas:
        release_url: "https://github.com/xianyi/OpenBLAS/archive/develop.zip"
        release_zip: "openblas-develop.zip"

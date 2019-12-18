@@ -5,6 +5,8 @@
             yum:
                     name: epel-release
                     state: latest
+            become: yes
+            become_method: sudo
 
           - name: Install Python3.6 from EPEL
             yum:
@@ -20,6 +22,8 @@
                             - libyaml-devel
                     state: latest
             when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int < 8
+            become: yes
+            become_method: sudo
 
           - name: Install Python3.6 from EPEL
             yum:
@@ -34,3 +38,5 @@
                     state: present
                     enablerepo: "PowerTools"
             when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8
+            become: yes
+            become_method: sudo

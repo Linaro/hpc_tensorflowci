@@ -1,6 +1,8 @@
 ---
 - name: Install dependencies
   import_tasks: roles/common/tasks/pre_build.yml
+  become: yes
+  become_method: sudo
 
 - name: Install python3 dependencies
   import_tasks: roles/common/tasks/pre_build_venv.yml
