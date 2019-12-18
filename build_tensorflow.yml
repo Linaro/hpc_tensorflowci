@@ -2,8 +2,8 @@
 - hosts: target
   roles:
           - common
-            #          - dnnl
-            #          - openblas
-            #          - bazel
+          - dnnl
+          - openblas
+          - bazel
           - numpy
           - tensorflow
