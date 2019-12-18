@@ -1,28 +1,25 @@
 ---
+- name: Update yum/dnf cache
+  shell: "yum update -y --nobest"
+  ignore_errors: true
+
 - name: Install dependencies
   yum:
           name: "{{ tf_build_dependencies }}"
-          state: latest
-
-- name: Test if OpenHPC is enabled
-  yum:
-          list: "ohpc-release"
-  register: is_ohpc_enabled
-
-- name: Enable OpenHPC if not already done
-  yum:
-          name: "{{ ohpc_release_url }}"
-  when: "'Error: No matching Packages to list' not in is_ohpc_enabled"
+          state: present
 
 - name: Install OpenHPC dependencies
-  yum:
-          name: "{{ tf_build_ohpc_dependencies }}"
-          state: latest
+  import_tasks: roles/common/tasks/install_ohpc.yml
+  when: use_openhpc == true
+
+- name: Install without OpenHPC dependencies
+  import_tasks: roles/common/tasks/install_no_ohpc.yml
+  when: use_openhpc == false
 
 - name: Install Java 11 OpenJDK
   yum:
-          name: "{{ tf_build_java8 }}"
-          state: latest
+          name: "{{ tf_build_java }}"
+          state: present
 
 - name: Put in Java env sourcing
   template:

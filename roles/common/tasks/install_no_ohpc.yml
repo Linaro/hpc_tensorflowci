@@ -1,0 +1,6 @@
+---
+- name: Install non-OpenHPC dependencies
+  yum:
+          name: "{{ tf_build_noohpc_dependencies }}"
+          enablerepo: "PowerTools"
+          state: present

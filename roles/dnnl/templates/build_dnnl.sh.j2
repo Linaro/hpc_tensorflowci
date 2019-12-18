@@ -1,10 +1,11 @@
 #!/bin/bash
 
 cmake -LA \
-      -DCMAKE_C_COMPILER:FILEPATH={{ ohpc_toolchain_base_dir }}/bin/gcc \
-      -DCMAKE_CXX_COMPILER:FILEPATH={{ ohpc_toolchain_base_dir }}/bin/g++ \
-      -DCMAKE_AR:FILEPATH={{ ohpc_toolchain_base_dir }}/bin/gcc-ar \
-      -DCMAKE_NM:FILEPATH={{ ohpc_toolchain_base_dir }}/bin/gcc-nm \
+      -DCMAKE_INSTALL_PREFIX:PATH={{ dnnl_prefix }} \
+      -DCMAKE_C_COMPILER:FILEPATH={{ toolchain_bin_dir }}/gcc \
+      -DCMAKE_CXX_COMPILER:FILEPATH={{ toolchain_bin_dir }}/g++ \
+      -DCMAKE_AR:FILEPATH={{ toolchain_bin_dir }}/gcc-ar \
+      -DCMAKE_NM:FILEPATH={{ toolchain_bin_dir }}/gcc-nm \
       -DARCH_OPT_FLAGS:STRING={{ dnnl.arch_opt_flags | default('HostOpts') }} \
       -DCMAKE_BUILD_TYPE:STRING={{ dnnl.build_type | default('DEBUG') }} \
       .. 

@@ -19,3 +19,18 @@
                             - libyaml
                             - libyaml-devel
                     state: latest
+            when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int < 8
+
+          - name: Install Python3.6 from EPEL
+            yum:
+                    name:
+                            - python3
+                            - python3-devel
+                            - python3-setuptools
+                            - python3-pip
+                            - python3-cffi
+                            - libyaml
+                            - libyaml-devel
+                    state: present
+                    enablerepo: "PowerTools"
+            when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 8

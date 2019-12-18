@@ -1,0 +1,15 @@
+---
+- name: Test if OpenHPC is enabled
+  yum:
+          list: "ohpc-release"
+  register: is_ohpc_enabled
+
+- name: Enable OpenHPC if not already done
+  yum:
+          name: "{{ ohpc_release_url }}"
+  when: "'Error: No matching Packages to list' not in is_ohpc_enabled"
+
+- name: Install OpenHPC dependencies
+  yum:
+          name: "{{ tf_build_ohpc_dependencies }}"
+          state: latest

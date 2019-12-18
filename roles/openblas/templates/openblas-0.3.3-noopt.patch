@@ -1,0 +1,37 @@
+diff --git a/lapack-netlib/INSTALL/Makefile b/lapack-netlib/INSTALL/Makefile
+index 150a061..abf0843 100644
+--- a/lapack-netlib/INSTALL/Makefile
++++ b/lapack-netlib/INSTALL/Makefile
+@@ -45,6 +45,3 @@ cleantest:
+ .SUFFIXES: .o .f
+ .f.o:
+ 	$(FORTRAN) $(OPTS) -c -o $@ $<
+-
+-slamch.o: slamch.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-dlamch.o: dlamch.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+diff --git a/lapack-netlib/SRC/Makefile b/lapack-netlib/SRC/Makefile
+index 531cb51..94051a1 100644
+--- a/lapack-netlib/SRC/Makefile
++++ b/lapack-netlib/SRC/Makefile
+@@ -603,10 +603,3 @@ clean:
+ 
+ .F.o:
+ 	$(FORTRAN) $(OPTS) -c $< -o $@
+-	
+-slaruv.o: slaruv.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-dlaruv.o: dlaruv.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-sla_wwaddw.o: sla_wwaddw.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-dla_wwaddw.o: dla_wwaddw.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-cla_wwaddw.o: cla_wwaddw.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-zla_wwaddw.o: zla_wwaddw.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+diff --git a/lapack-netlib/TESTING/MATGEN/Makefile b/lapack-netlib/TESTING/MATGEN/Makefile
+index e20004c..f168821 100644
+--- a/lapack-netlib/TESTING/MATGEN/Makefile
++++ b/lapack-netlib/TESTING/MATGEN/Makefile
+@@ -95,6 +95,3 @@ cleanlib:
+ 
+ .f.o:
+ 	$(FORTRAN) $(OPTS) -c -o $@ $<
+-
+-slaran.o: slaran.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
+-dlaran.o: dlaran.f ; $(FORTRAN) $(NOOPT) -c -o $@ $<
