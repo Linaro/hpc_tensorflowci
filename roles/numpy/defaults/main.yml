@@ -6,11 +6,11 @@ numpy_version: "1.17.4"
 numpy_dir_base: "{{ dir_home }}/numpy/{{ numpy_version}}"
 numpy_dir_src: "{{ numpy_dir_base }}/numpy-{{ numpy_version }}"
 numpy_dir_output: "{{ numpy_dir_src }}/dist"
+numpy_patching_required: true
 numpy:
        release_url: "https://github.com/numpy/numpy/releases/download/v{{ numpy_version }}/numpy-{{ numpy_version }}.zip"
        release_zip: "numpy-{{ numpy_version }}.zip"
        release_sha256: "a0678793096205a4d784bd99f32803ba8100f639cf3b932dc63b21621390ea7e"
        wheel: "{{ numpy_dir_output }}/numpy-{{ numpy_version }}-cp36-cp36m-linux_aarch64.whl"
-       patching_required: true
        patch: 'numpy_centos7_aarch64.patch'
        built_tarball: "numpy_{{ numpy_version }}_{{ build_id }}.tar.gz"
