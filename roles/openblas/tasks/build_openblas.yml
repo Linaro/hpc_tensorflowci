@@ -48,7 +48,6 @@
           - "openblas-0.2.15-system_lapack.patch"
           - "openblas-0.2.5-libname.patch"
           - "openblas-0.2.15-constructor.patch"
-          - "openblas-0.3.3-noopt.patch"
   when: use_openhpc == false 
           
 - name: Fetch openblas release tarball

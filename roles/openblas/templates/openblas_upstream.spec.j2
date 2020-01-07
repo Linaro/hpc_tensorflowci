@@ -27,8 +27,6 @@ Patch0:         openblas-0.2.15-system_lapack.patch
 Patch1:         openblas-0.2.5-libname.patch
 # Don't use constructor priorities on too old architectures
 Patch2:         openblas-0.2.15-constructor.patch
-# Enable optimizations for all LAPACK sources
-Patch3:         openblas-0.3.3-noopt.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-gfortran
@@ -228,7 +226,6 @@ cd OpenBLAS-develop
 %if 0%{?rhel} == 5
 %patch2 -p1 -b .constructor
 %endif
-%patch3 -p1 -b .noopt
 
 # Fix source permissions
 find -name \*.f -exec chmod 644 {} \;
