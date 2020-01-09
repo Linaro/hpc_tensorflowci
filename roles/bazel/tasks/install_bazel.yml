@@ -10,6 +10,11 @@
 - name: Repopulate yum cache
   shell: "yum makecache"
 
+- name: Remove bazel
+  yum:
+          name: bazel
+          state: absent
+
 - name: Install bazel from the repo
   yum:
           name: bazel-{{ bazel_version }}

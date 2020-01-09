@@ -35,6 +35,14 @@
   register: bazel_build_log
 - debug: var=bazel_build_log
 
+- name: Remove bazel
+  yum:
+          name: bazel
+          state: absent
+  become: yes
+  become_user: root
+  become_method: sudo
+
 - name: Install bazel
   yum:
           name: "{{ bazel_rpm }}"
