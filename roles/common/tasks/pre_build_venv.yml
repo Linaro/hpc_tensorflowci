@@ -1,5 +1,5 @@
 ---
-- name: Make sure pip is upgraded
+- name: Make sure system pip is upgraded
   pip:
           name: setuptools
           executable: pip3
@@ -11,6 +11,12 @@
           name: "{{ tf_build_py3_dependencies }}"
           virtualenv: "{{ venv_path }}"
           virtualenv_command: "{{ python3 }} -m venv"
+          
+- name: Make sure venv pip is upgraded
+  pip:
+          name: "pip"
+          virtualenv: "{{ venv_path }}"
+          extra_args: "--upgrade"
           
 - name: Install keras dependencies in venv
   pip:
