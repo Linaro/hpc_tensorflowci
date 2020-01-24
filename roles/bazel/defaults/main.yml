@@ -8,6 +8,7 @@ bazel_rpm: "{{ dir_rpmbuilt }}/bazel-{{ bazel_version }}-{{ bazel_minorversion }
 bazel_dir_base: "{{ dir_home }}/bazel"
 bazel_dir_src: "{{ bazel_dir_base }}/{{ bazel_version}}"
 bazel_dir_output: "{{ bazel_dir_src }}/output"
+bazel_repo_url: "http://10.40.0.13/repo/bazel"
 bazel:
        release_url: "https://github.com/bazelbuild/bazel/releases/download/{{ bazel_version }}/bazel-{{ bazel_version }}-dist.zip"
        release_zip: "bazel-{{ bazel_version }}-dist.zip"
