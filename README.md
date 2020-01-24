@@ -20,10 +20,22 @@ To use the recipes, refer to [the build_tensorflow Jenkins job of hpc_lab_setup]
 - Run install_python3.yml first to make sure the python requirements are present on the target building machine
 - Then run build_tensorflow.yml to build the stack
 
+### Exempli gratia
+
+```bash
+$ cat << EOF > hosts
+[target]
+$IP_OF_THE_MACHINE_YOU_WANT_TO_BUILD_ON
+EOF
+$ ansible-playbook -i hosts install_python3.yml # Add -v(vv) for verbose output
+$ ansible-playbook -i hosts build_tensorflow.yml # You can also override default variables, although default should build everything fine
+```
+
 ## Overview of the build variables
 
 ### Common
 
+- arch : architecture of the target machine (aarch64 by default)
 - user : name of the passwordless user that will be created to build everything
 - build_id: index of the build in order to have separate builds on the same machine (in separate virtual environments)
 - use_openhpc: boolean to toggle the use of OpenHPC's stack (if CentOS7 then this is true by default, else it is false)
